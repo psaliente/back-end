@@ -7,6 +7,7 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 app.use(cors());
+app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
