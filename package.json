@@ -7,11 +7,15 @@
     "express": "^4.17.1",
     "socket.io": "^4.3.1"
   },
+  "engines": {
+    "node": "16.9.0"
+  },
   "scripts": {
     "start": "node movie-house-api.js"
   },
   "author": {
     "name": "Peter John Saliente",
     "email": "peterjohncorderosaliente@gmail.com"
-  }
+  },
+  "license": "MIT"
 }
