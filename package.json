@@ -1,9 +1,17 @@
 {
+  "name": "pjs-movie-house",
+  "version": "1.0.0",
+  "description": "demonstration of using Angular and NodeJS",
+  "main": "movie-house-api.js",
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^4.3.1"
   },
   "scripts": {
     "start": "node movie-house-api.js"
+  },
+  "author": {
+    "name": "Peter John Saliente",
+    "email": "peterjohncorderosaliente@gmail.com"
   }
 }
