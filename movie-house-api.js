@@ -1,7 +1,17 @@
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
+const winston = require('winston');
 const url = require('url');
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'combined.log' })
+    ]
+})
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
@@ -11,7 +21,7 @@ app.use('/', express.static(__dirname + '/public', {
     index: 'index.html'
 }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 let movies = [
     {
@@ -386,9 +396,9 @@ app.post('/api/seats', (req, res) => {
 
         res.sendStatus(200);
     }
-    catch(e) {
+    catch (e) {
         res.sendStatus(500);
-        console.error(e);
+        logger.log('error', e);
     }
 });
 
@@ -401,15 +411,15 @@ app.post('/api/transaction', async (req, res) => {
         transactions.push(req.body);
         res.sendStatus(200);
     }
-    catch(e) {
+    catch (e) {
         res.sendStatus(500);
-        console.error(e);
+        logger.log('error', e)
     }
 });
 
 
-io.on('connection', s => {console.log('socket io connected');});
+io.on('connection', s => { console.log('socket io connected'); });
 
 let server = http.listen(3001, () => {
-    console.log(`server is listening on port ${server.address().port}`)
+    logger.info(`server is listening on port ${server.address().port}`)
 });
