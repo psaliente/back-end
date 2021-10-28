@@ -5,6 +5,7 @@
   "main": "movie-house-api.js",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^6.0.12",
     "socket.io": "^4.3.1",
     "winston": "^3.3.3"
   },

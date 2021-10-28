@@ -15,6 +15,7 @@ const logger = winston.createLogger({
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let mongoose = require('mongoose');
 
 app.use(cors());
 app.use('/', express.static(__dirname + '/public', {
@@ -23,341 +24,25 @@ app.use('/', express.static(__dirname + '/public', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-let movies = [
-    {
-        Id: 1,
-        Title: 'untitled movie 1',
-        Description: 'lorem ipsum dolor sit amet',
-        Thumbnail: ''
-    },
-    {
-        Id: 2,
-        Title: 'untitled movie 2',
-        Description: 'lorem ipsum dolor sit amet',
-        Thumbnail: ''
-    },
-    {
-        Id: 3,
-        Title: 'untitled movie 3',
-        Description: 'lorem ipsum dolor sit amet',
-        Thumbnail: ''
-    },
-    {
-        Id: 4,
-        Title: 'untitled movie 4',
-        Description: 'lorem ipsum dolor sit amet',
-        Thumbnail: ''
-    },
-    {
-        Id: 5,
-        Title: 'untitled movie 5',
-        Description: 'lorem ipsum dolor sit amet',
-        Thumbnail: ''
-    }
-];
+mongoose.Promise = Promise;
 
-let seats = [
-    {
-        Id: 1,
-        MovieId: 1,
-        SeatLocation: 'A1',
-        Occupied: false
-    },
-    {
-        Id: 2,
-        MovieId: 1,
-        SeatLocation: 'A2',
-        Occupied: false
-    },
-    {
-        Id: 3,
-        MovieId: 1,
-        SeatLocation: 'A3',
-        Occupied: false
-    },
-    {
-        Id: 4,
-        MovieId: 1,
-        SeatLocation: 'A4',
-        Occupied: false
-    },
-    {
-        Id: 5,
-        MovieId: 1,
-        SeatLocation: 'A5',
-        Occupied: false
-    },
-    {
-        Id: 6,
-        MovieId: 1,
-        SeatLocation: 'B1',
-        Occupied: false
-    },
-    {
-        Id: 7,
-        MovieId: 1,
-        SeatLocation: 'B2',
-        Occupied: false
-    },
-    {
-        Id: 8,
-        MovieId: 1,
-        SeatLocation: 'B3',
-        Occupied: false
-    },
-    {
-        Id: 9,
-        MovieId: 1,
-        SeatLocation: 'B4',
-        Occupied: false
-    },
-    {
-        Id: 10,
-        MovieId: 1,
-        SeatLocation: 'B5',
-        Occupied: false
-    },
-    {
-        Id: 11,
-        MovieId: 2,
-        SeatLocation: 'A1',
-        Occupied: false
-    },
-    {
-        Id: 12,
-        MovieId: 2,
-        SeatLocation: 'A2',
-        Occupied: false
-    },
-    {
-        Id: 13,
-        MovieId: 2,
-        SeatLocation: 'A3',
-        Occupied: false
-    },
-    {
-        Id: 14,
-        MovieId: 2,
-        SeatLocation: 'A4',
-        Occupied: false
-    },
-    {
-        Id: 15,
-        MovieId: 2,
-        SeatLocation: 'A5',
-        Occupied: false
-    },
-    {
-        Id: 16,
-        MovieId: 2,
-        SeatLocation: 'B1',
-        Occupied: false
-    },
-    {
-        Id: 17,
-        MovieId: 2,
-        SeatLocation: 'B2',
-        Occupied: false
-    },
-    {
-        Id: 18,
-        MovieId: 2,
-        SeatLocation: 'B3',
-        Occupied: false
-    },
-    {
-        Id: 19,
-        MovieId: 2,
-        SeatLocation: 'B4',
-        Occupied: false
-    },
-    {
-        Id: 20,
-        MovieId: 2,
-        SeatLocation: 'B5',
-        Occupied: false
-    },
-    {
-        Id: 21,
-        MovieId: 3,
-        SeatLocation: 'A1',
-        Occupied: false
-    },
-    {
-        Id: 22,
-        MovieId: 3,
-        SeatLocation: 'A2',
-        Occupied: false
-    },
-    {
-        Id: 23,
-        MovieId: 3,
-        SeatLocation: 'A3',
-        Occupied: false
-    },
-    {
-        Id: 24,
-        MovieId: 3,
-        SeatLocation: 'A4',
-        Occupied: false
-    },
-    {
-        Id: 25,
-        MovieId: 3,
-        SeatLocation: 'A5',
-        Occupied: false
-    },
-    {
-        Id: 26,
-        MovieId: 3,
-        SeatLocation: 'B1',
-        Occupied: false
-    },
-    {
-        Id: 27,
-        MovieId: 3,
-        SeatLocation: 'B2',
-        Occupied: false
-    },
-    {
-        Id: 28,
-        MovieId: 3,
-        SeatLocation: 'B3',
-        Occupied: false
-    },
-    {
-        Id: 29,
-        MovieId: 3,
-        SeatLocation: 'B4',
-        Occupied: false
-    },
-    {
-        Id: 30,
-        MovieId: 3,
-        SeatLocation: 'B5',
-        Occupied: false
-    },
-    {
-        Id: 31,
-        MovieId: 4,
-        SeatLocation: 'A1',
-        Occupied: false
-    },
-    {
-        Id: 32,
-        MovieId: 4,
-        SeatLocation: 'A2',
-        Occupied: false
-    },
-    {
-        Id: 33,
-        MovieId: 4,
-        SeatLocation: 'A3',
-        Occupied: false
-    },
-    {
-        Id: 34,
-        MovieId: 4,
-        SeatLocation: 'A4',
-        Occupied: false
-    },
-    {
-        Id: 35,
-        MovieId: 4,
-        SeatLocation: 'A5',
-        Occupied: false
-    },
-    {
-        Id: 36,
-        MovieId: 4,
-        SeatLocation: 'B1',
-        Occupied: false
-    },
-    {
-        Id: 37,
-        MovieId: 4,
-        SeatLocation: 'B2',
-        Occupied: false
-    },
-    {
-        Id: 38,
-        MovieId: 4,
-        SeatLocation: 'B3',
-        Occupied: false
-    },
-    {
-        Id: 39,
-        MovieId: 4,
-        SeatLocation: 'B4',
-        Occupied: false
-    },
-    {
-        Id: 40,
-        MovieId: 4,
-        SeatLocation: 'B5',
-        Occupied: false
-    },
-    {
-        Id: 41,
-        MovieId: 5,
-        SeatLocation: 'A1',
-        Occupied: false
-    },
-    {
-        Id: 42,
-        MovieId: 5,
-        SeatLocation: 'A2',
-        Occupied: false
-    },
-    {
-        Id: 43,
-        MovieId: 5,
-        SeatLocation: 'A3',
-        Occupied: false
-    },
-    {
-        Id: 44,
-        MoviId: 5,
-        SeatLocation: 'A4',
-        Occupied: false
-    },
-    {
-        Id: 45,
-        MovieId: 5,
-        SeatLocation: 'A5',
-        Occupied: false
-    },
-    {
-        Id: 46,
-        MovieId: 5,
-        SeatLocation: 'B1',
-        Occupied: false
-    },
-    {
-        Id: 47,
-        MovieId: 5,
-        SeatLocation: 'B2',
-        Occupied: false
-    },
-    {
-        Id: 48,
-        MovieId: 5,
-        SeatLocation: 'B3',
-        Occupied: false
-    },
-    {
-        Id: 49,
-        MovieId: 5,
-        SeatLocation: 'B4',
-        Occupied: false
-    },
-    {
-        Id: 50,
-        MovieId: 5,
-        SeatLocation: 'B5',
-        Occupied: false
-    }
-];
+const dbURL = 'mongodb+srv://nodeUser:ivnwY8F7faMyakln@cluster0.5jr6j.mongodb.net/movie-house?retryWrites=true&w=majority';
+
+//thumbnail sources https://www.bestrandoms.com/random-movie-generator
+
+let Seat = mongoose.Schema({
+    MovieId: Number,
+    Location: String,
+    Occupied: Boolean
+});
+
+let Movie = mongoose.model('Movie', {
+    Title: String,
+    Year: String,
+    Description: String,
+    Thumbnail: String,
+    Seats: [Seat]
+});
 
 let paymentTypes = [
     {
@@ -373,27 +58,44 @@ let paymentTypes = [
 let transactions = [];
 
 app.get('/api/movies', (req, res) => {
-    res.send(movies);
+    try {
+        Movie.find({}, (e, movies) => {
+            res.send(movies);
+        });
+    }
+    catch (e) {
+        res.sendStatus(500);
+        logger.error(e);
+    }
 });
 
-app.get('/api/seats', (req, res) => {
-    const queryObj = url.parse(req.url, true).query;
-    res.send(seats.filter(d => d.MovieId == queryObj.MovieId));
+app.get('/api/seats', async (req, res) => {
+    try {
+        const queryObj = url.parse(req.url, true).query;
+        let movie = await Movie.findOne({ _id: queryObj.MovieId })
+        if (movie) {
+            res.send(movie.Seats);
+        } else {
+            res.send([]);
+        }
+    }
+    catch (e) {
+        res.sendStatus(500);
+        logger.error(e);
+    }
 });
 
-app.post('/api/seats', (req, res) => {
+app.post('/api/seats', async (req, res) => {
     try {
         let seat = req.body;
 
-        let found = seats.find(d => d.Id == seat.Id);
-
-        if (found) {
+        let movie = await Movie.findOne({ _id: seat.MovieId });
+        if (movie) {
+            let found = movie.Seats.filter(s => s.Location == seat.Location);
             found.Occupied = seat.Occupied;
+            await movie.save();
+            logger.info(`saved - MovieID:${seat.MovieId} SeatLocation:${seat.Location} Occupied:${seat.Occupied}`);
         }
-        else {
-            seats.push(seat);
-        }
-
         res.sendStatus(200);
     }
     catch (e) {
@@ -419,6 +121,11 @@ app.post('/api/transaction', async (req, res) => {
 
 
 io.on('connection', s => { console.log('socket io connected'); });
+
+mongoose.connect(dbURL, (err) => {
+    console.log('mongo db error', err)
+    logger.error(err)
+});
 
 let server = http.listen(3001, () => {
     logger.info(`server is listening on port ${server.address().port}`)
